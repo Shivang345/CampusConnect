@@ -3,5 +3,12 @@
 @tailwind utilities;
 
 /* small global tweaks */
-html, body, #root { height: 100%; }
-body { @apply bg-gray-50 text-gray-800; }
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply text-slate-100 antialiased;
+}

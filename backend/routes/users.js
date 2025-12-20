@@ -50,7 +50,7 @@ router.get("/:id", async (req, res, next) => {
 router.put("/me", auth, async (req, res, next) => {
   try {
     const updates = { ...req.body };
-    delete updates.password; // handle password change via dedicated route if desired
+     updates.password; // handle password change via dedicated route if desired
 
     const user = await User.findByIdAndUpdate(
       req.user.id,

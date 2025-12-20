@@ -10,7 +10,7 @@ export default function PostForm() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: { "image/*": [] },
     maxFiles: 1,
     onDrop: (acceptedFiles) => setImage(acceptedFiles[0]),
@@ -18,48 +18,74 @@ export default function PostForm() {
 
   async function submit(e) {
     e.preventDefault();
-    if (!content && !image) return alert("Post cannot be empty");
+    if (!content.trim() && !image) return;
+
     setLoading(true);
     try {
-      let imageUrl = "";
+      let imageUrl;
+
       if (image) {
-        const data = await uploadFile(image);
-        imageUrl = data.filename;
+        const uploaded = await uploadFile(image);
+        imageUrl = uploaded.url;
       }
-      await API.post("/posts", { content, imageUrl });
-      navigate("/"); // go back to feed
-      window.location.reload();
+
+      await API.post("/posts", {
+        content: content.trim(),
+        imageUrl,
+      });
+
+      setContent("");
+      setImage(null);
+      navigate("/");
     } catch (err) {
-      console.error(err);
-      alert("Failed to create post");
+      console.error("Failed to create post", err);
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={submit} className="bg-white p-4 rounded shadow space-y-3">
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="What's on your mind?"
-        className="w-full border p-2 rounded resize-none"
-        rows={4}
-      />
+    <form onSubmit={submit} className="space-y-4">
+      <div className="space-y-2">
+        <label className="text-sm font-medium text-slate-200">
+          What's happening on campus?
+        </label>
+        <textarea
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={3}
+          placeholder="Share an update, event or opportunity..."
+          className="w-full rounded-2xl border border-slate-200 bg-white/80 px-3 py-2.5 text-sm text-slate-800 shadow-sm outline-none ring-0 transition placeholder:text-slate-400 focus:border-accent focus:ring-2 focus:ring-accent/25"
+        />
+      </div>
+
       <div
         {...getRootProps()}
-        className="border-dashed border-2 border-gray-300 p-4 text-center cursor-pointer rounded"
+        className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-2xl border border-dashed px-4 py-4 text-xs sm:text-sm transition ${
+          isDragActive
+            ? "border-accent bg-accent/5 text-accent"
+            : "border-slate-300/80 bg-white/60 text-slate-500 hover:border-accent/70 hover:bg-accent/5"
+        }`}
       >
         <input {...getInputProps()} />
-        {image ? (
-          <p>{image.name}</p>
-        ) : (
-          <p>Drag & drop an image here, or click to select</p>
+        <span className="font-medium">
+          {image ? "Change image" : "Attach an image (optional)"}
+        </span>
+        <span className="text-[11px] sm:text-xs">
+          Drag & drop or click to browse
+        </span>
+        {image && (
+          <span className="mt-1 truncate text-[11px] text-slate-500">
+            {image.name}
+          </span>
         )}
       </div>
-      <Button type="submit" disabled={loading}>
-        {loading ? "Posting..." : "Post"}
-      </Button>
+
+      <div className="flex justify-end">
+        <Button type="submit" disabled={loading}>
+          {loading ? "Posting..." : "Post update"}
+        </Button>
+      </div>
     </form>
   );
 }
