@@ -21,9 +21,20 @@ export default function Home() {
     (async () => {
       try {
         const res = await API.get("/posts");
-        if (mounted) setPosts(res.data || []);
+        if (mounted) {
+          setPosts(res.data || []);
+          setLoading(false);
+        }
       } catch (err) {
         console.error("Failed to load posts", err);
+        // Set loading to false even if API call fails
+        if (mounted) {
+          setLoading(false);
+          // If it's a 401, the user needs to log in again
+          if (err?.response?.status === 401) {
+            console.warn("Authentication failed. Please log out and log back in.");
+          }
+        }
       }
 
       // 🔌 WebSocket connection
@@ -57,7 +68,9 @@ export default function Home() {
         });
       } catch (e) {
         // fail silently if socket setup fails
+        console.error("WebSocket connection failed", e);
       } finally {
+        // Ensure loading is set to false after both API call and WebSocket setup
         if (mounted) setLoading(false);
       }
     })();

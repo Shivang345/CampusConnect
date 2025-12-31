@@ -1,0 +1,64 @@
+services:
+  # MongoDB service
+  mongo:
+    image: mongo:7
+    container_name: campusconnect-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: campusconnect
+    networks:
+      - campusconnect-network
+
+  # Backend service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: campusconnect-backend
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - MONGO_URI=mongodb://mongo:27017/campusconnect
+      - CLIENT_ORIGIN=http://localhost:3000
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-change-this-in-production}
+      - JWT_EXPIRES_IN=7d
+    volumes:
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      - mongo
+    networks:
+      - campusconnect-network
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Set NODE_ENV to production so API uses relative URLs
+        NODE_ENV: production
+        REACT_APP_API_URL: /api
+    container_name: campusconnect-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - campusconnect-network
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  campusconnect-network:
+    driver: bridge
+

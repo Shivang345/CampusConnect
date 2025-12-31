@@ -16,7 +16,7 @@ const eventRoutes = require("./routes/events");
 const clubRoutes = require("./routes/clubs");
 const uploadRoutes = require("./routes/uploads");
 
-const errorHandler = require("./middleware/errorhandler");
+const errorHandler = require("./middleware/errorHandler");
 const redisClient = require("./config/redis"); // 🔴 new
 
 const app = express();

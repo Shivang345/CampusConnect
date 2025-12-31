@@ -20,12 +20,15 @@ redisClient.on("reconnecting", () => {
   console.log("Reconnecting to Redis...");
 });
 
-// Immediately try to connect
+// Immediately try to connect (fail gracefully - Redis is optional)
 (async () => {
   try {
     await redisClient.connect();
   } catch (err) {
-    console.error("Failed to connect to Redis:", err);
+    // Redis is optional - fail silently in production
+    if (process.env.NODE_ENV !== 'production') {
+      console.error("Failed to connect to Redis:", err.message);
+    }
   }
 })();
 
