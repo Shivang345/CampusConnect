@@ -26,7 +26,8 @@ export default function PostForm() {
 
       if (image) {
         const uploaded = await uploadFile(image);
-        imageUrl = uploaded.url;
+        // Store only filename for consistent access later
+        imageUrl = uploaded.filename || uploaded.url;
       }
 
       await API.post("/posts", {

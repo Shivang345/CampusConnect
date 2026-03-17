@@ -68,7 +68,7 @@ export default function Profile() {
 
       <div className="grid gap-4 md:grid-cols-[minmax(0,1.6fr)_minmax(0,1.2fr)]">
         {/* Left: main info */}
-        <Card className="bg-slate-900/80 border-slate-700/70 text-slate-100">
+        <Card className="bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-slate-900/60 border-slate-700/70 text-slate-100">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <div className="relative">
               <div className="h-20 w-20 overflow-hidden rounded-2xl border border-slate-700 bg-slate-800">
@@ -123,7 +123,7 @@ export default function Profile() {
         </Card>
 
         {/* Right: small meta / actions */}
-        <Card className="bg-slate-900/80 border-slate-700/70 text-slate-100">
+        <Card className="bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-slate-900/70 border-slate-700/70 text-slate-100">
           <h3 className="text-sm font-semibold">Profile snapshot</h3>
           <div className="mt-3 space-y-2 text-xs text-slate-300">
             <p>

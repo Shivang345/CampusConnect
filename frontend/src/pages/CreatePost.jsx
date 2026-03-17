@@ -19,7 +19,7 @@ export default function CreatePost() {
         </p>
       </div>
 
-      <Card className="bg-slate-900/80 border-slate-700/70 text-slate-100">
+      <Card className="bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-slate-900/70 border-slate-700/70 text-slate-100">
         <PostForm />
       </Card>
     </Container>

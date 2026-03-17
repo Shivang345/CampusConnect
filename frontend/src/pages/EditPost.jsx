@@ -14,6 +14,15 @@ export default function EditPost() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  const uploadsBase = `${window.location.origin}/uploads`;
+  const resolveImageSrc = (img) => {
+    if (!img) return "";
+    if (img.startsWith("http://") || img.startsWith("https://")) {
+      return img;
+    }
+    return `${uploadsBase}/${img}`;
+  };
+
   // Load post data on mount
   useEffect(() => {
     async function loadPost() {
@@ -47,7 +56,7 @@ export default function EditPost() {
           headers: { "Content-Type": "multipart/form-data" },
         });
 
-        imageUrl = uploadRes.data.url || uploadRes.data.filename || imageUrl;
+        imageUrl = uploadRes.data.filename || uploadRes.data.url || imageUrl;
       }
 
       await API.put(`/posts/${id}`, { content, imageUrl });
@@ -107,7 +116,7 @@ export default function EditPost() {
               {existingImageUrl && !imageFile && (
                 <div className="overflow-hidden rounded-xl border border-slate-700 bg-slate-900">
                   <img
-                    src={existingImageUrl}
+                    src={resolveImageSrc(existingImageUrl)}
                     alt="Current"
                     className="max-h-64 w-full object-cover"
                   />

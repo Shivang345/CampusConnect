@@ -137,6 +137,14 @@ export default function Home() {
 
   const uploadsBase = `${getSocketBaseUrl()}/uploads`;
 
+  const resolveImageSrc = (imageUrl) => { 
+    if (!imageUrl) return null;
+    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
+      return imageUrl; 
+    }
+    return `${uploadsBase}/${imageUrl}`;
+  };
+
   return (
     <Container className="py-6 sm:py-8">
       {/* Floating create button (mobile) */}
@@ -249,7 +257,7 @@ export default function Home() {
                 return (
                   <Card
                     key={p._id}
-                    className="border-slate-700/70 bg-slate-900/80 text-slate-100"
+                    className="border-slate-700/70 bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-slate-900/60 text-slate-100"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex flex-col gap-1">
@@ -275,7 +283,7 @@ export default function Home() {
                         {p.imageUrl && (
                           <div className="mt-3 overflow-hidden rounded-xl border border-slate-700/80 bg-slate-900">
                             <img
-                              src={`${uploadsBase}/${p.imageUrl}`}
+                              src={resolveImageSrc(p.imageUrl)}
                               alt="post"
                               className="max-h-96 w-full object-cover"
                               loading="lazy"
@@ -341,7 +349,7 @@ export default function Home() {
 
         {/* Right column: quick actions */}
         <div className="space-y-3">
-          <Card className="bg-slate-900/80 border-slate-700/70 text-slate-100">
+          <Card className="bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-slate-900/60 border-slate-700/70 text-slate-100">
             <h3 className="text-sm font-semibold">Posting guidelines</h3>
             <ul className="mt-2 space-y-1 text-xs text-slate-300">
               <li>• Keep it relevant to your college / campus.</li>
@@ -351,7 +359,7 @@ export default function Home() {
             </ul>
           </Card>
 
-          <Card className="bg-slate-900/80 border-slate-700/70 text-slate-100">
+          <Card className="bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-slate-900/60 border-slate-700/70 text-slate-100">
             <h3 className="text-sm font-semibold">Quick actions</h3>
             <div className="mt-3 flex flex-col gap-2 text-xs">
               <Link
